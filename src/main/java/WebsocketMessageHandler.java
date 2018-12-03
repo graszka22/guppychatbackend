@@ -1,3 +1,5 @@
+import io.javalin.websocket.WsSession;
+
 public interface WebsocketMessageHandler {
-    void handleMessage(WebsocketMessage message);
+    void handleMessage(WsSession session);
 }
