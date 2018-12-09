@@ -1,6 +1,8 @@
 import com.google.gson.JsonObject;
 import io.javalin.websocket.WsSession;
 
+import java.sql.SQLException;
+
 public class WebsocketMessageHandlerWrapper<T extends WebsocketMessageHandler> {
     private T messageHandler;
 
@@ -8,7 +10,7 @@ public class WebsocketMessageHandlerWrapper<T extends WebsocketMessageHandler> {
         this.messageHandler = messageHandler;
     }
 
-    void runHandler(WsSession session) {
+    void runHandler(WsSession session) throws SQLException {
         messageHandler.handleMessage(session);
     }
 }

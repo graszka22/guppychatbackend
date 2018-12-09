@@ -1,21 +1,30 @@
+import com.google.gson.Gson;
 import io.javalin.websocket.WsSession;
 
+import java.sql.SQLException;
+import java.util.List;
+
 public class GetMessagesWebsocketMessageHandler implements WebsocketMessageHandler {
-    private static class GetMessagesCommandData {
+    public static class GetMessagesCommandData {
         public int userId;
         public int friendId;
     }
+
+    private GetMessagesCommandData data;
 
     public static Class<GetMessagesCommandData> getDataClass() {
         return GetMessagesCommandData.class;
     }
 
     GetMessagesWebsocketMessageHandler(GetMessagesCommandData data) {
-
+        this.data = data;
     }
 
     @Override
-    public void handleMessage(WsSession session) {
-
+    public void handleMessage(WsSession session) throws SQLException {
+        MessageFinder messageFinder = new MessageFinder();
+        List<MessageGateway> listOfMessages = messageFinder.findByUsers(data.userId, data.friendId);
+        String response = new Gson().toJson(listOfMessages);
+        session.send(response);
     }
 }

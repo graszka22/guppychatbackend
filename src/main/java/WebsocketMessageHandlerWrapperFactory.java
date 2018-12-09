@@ -3,6 +3,15 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 
 public class WebsocketMessageHandlerWrapperFactory implements JsonDeserializer<WebsocketMessageHandlerWrapper> {
+    private Gson gson;
+
+    WebsocketMessageHandlerWrapperFactory() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(WebsocketMessageHandlerWrapper.class, this);
+        gson = gsonBuilder.create();
+    }
+
+
     @Override
     public WebsocketMessageHandlerWrapper deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -22,11 +31,11 @@ public class WebsocketMessageHandlerWrapperFactory implements JsonDeserializer<W
     }
 
     public WebsocketMessageHandlerWrapper create(String message) {
-        return new Gson().fromJson(message, WebsocketMessageHandlerWrapper.class);
+        return gson.fromJson(message, WebsocketMessageHandlerWrapper.class);
     }
 
     private <T> T dataFromJson(JsonObject jsonObject, Class<T> cl) {
-        return new Gson().fromJson(jsonObject.get("data"), cl);
+        return gson.fromJson(jsonObject.get("data"), cl);
     }
 
     private enum WebSocketMessageType {

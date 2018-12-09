@@ -19,8 +19,12 @@ public class MessageFinder {
         return messages
                 .stream()
                 .map(message -> {
-                    MessageGateway messageFromIdentityMap = messageIdentityMap.getMessage(message.getId());
-                    return messageFromIdentityMap == null ? messageFromIdentityMap : message;
+                    MessageGateway messageFromIdentityMap = messageIdentityMap.getMessage(message.getMessageId());
+                    if(messageFromIdentityMap == null)  {
+                        messageIdentityMap.addMessage(message);
+                        return message;
+                    }
+                    return messageFromIdentityMap;
                 })
                 .collect(Collectors.toList());
     }

@@ -1,40 +1,36 @@
-import javax.xml.transform.Result;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Date;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 public class MessageGateway {
-    private int id;
+    private int messageId;
     private int senderId;
     private int receiverId;
     private String text;
-    private Date dateSent;
+    private Timestamp dateSent;
 
     private MessageGateway(ResultSet rs) throws SQLException {
-        this.id = rs.getInt("id");
+        this.messageId = rs.getInt("message_id");
         this.senderId = rs.getInt("sender_id");
         this.receiverId = rs.getInt("receiver_id");
         this.text = rs.getString("text");
-        this.dateSent = rs.getDate("date_sent");
+        this.dateSent = rs.getTimestamp("date_sent");
     }
 
-    public MessageGateway(int senderId, int receiverId, String text, Date dateSent) {
+    public MessageGateway(int senderId, int receiverId, String text, Timestamp dateSent) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.text = text;
         this.dateSent = dateSent;
     }
 
-    public int getId() {
-        return id;
+    public int getMessageId() {
+        return messageId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMessageId(int messageId) {
+        this.messageId = messageId;
     }
 
     public int getSenderId() {
@@ -61,17 +57,17 @@ public class MessageGateway {
         this.text = text;
     }
 
-    public Date getDateSent() {
+    public Timestamp getDateSent() {
         return dateSent;
     }
 
-    public void setDateSent(Date dateSent) {
+    public void setDateSent(Timestamp dateSent) {
         this.dateSent = dateSent;
     }
 
-    private static final String updateStatement = "UPDATE message SET sender_id = ?, receiver_id = ?, text = ?, date_sent = ? WHERE id = ?;";
+    private static final String updateStatement = "UPDATE message SET sender_id = ?, receiver_id = ?, text = ?, date_sent = ? WHERE message_id = ?;";
     private static final String insertStatement = "INSERT INTO message(sender_id, receiver_id, text, date_sent) VALUES (?, ?, ?, ?);";
-    private static final String findStatement = "SELECT * FROM message WHERE id = ?;";
+    private static final String findStatement = "SELECT * FROM message WHERE message_id = ?;";
     private static final String findByUsersStatement = "SELECT * FROM message WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?);";
 
     public void update() throws SQLException {
@@ -79,7 +75,7 @@ public class MessageGateway {
         statement.setInt(1, senderId);
         statement.setInt(2, receiverId);
         statement.setString(3, text);
-        statement.setDate(4, dateSent);
+        statement.setTimestamp(4, dateSent);
         statement.executeUpdate();
     }
 
@@ -88,11 +84,13 @@ public class MessageGateway {
         statement.setInt(1, senderId);
         statement.setInt(2, receiverId);
         statement.setString(3, text);
-        statement.setDate(4, dateSent);
+        statement.setTimestamp(4, dateSent);
         statement.executeUpdate();
         try(ResultSet rs = statement.getGeneratedKeys()) {
-            if(rs.next())
-                return rs.getInt(1);
+            if(rs.next()) {
+                this.messageId = rs.getInt(1);
+                return this.messageId;
+            }
         }
         throw new SQLException("Can't insert row into database");
     }

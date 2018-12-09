@@ -90,7 +90,8 @@ public class AccountGateway {
         pstmt.executeUpdate();
         try(ResultSet rs = pstmt.getGeneratedKeys()) {
             if (rs.next()) {
-                return rs.getInt(1);
+                this.userId = rs.getInt(1);
+                return this.userId;
             }
         }
         throw new SQLException("Can't insert row into database");
