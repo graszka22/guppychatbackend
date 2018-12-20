@@ -70,6 +70,7 @@ public class AccountGateway {
     private static final String insertStatement = "INSERT INTO account(username, password, email, session_token) VALUES (?, ?, ?, ?);";
     private final static String findStatement = "SELECT * FROM account WHERE user_id = ?;";
     private final static String findByUsernameStatement = "SELECT * FROM account WHERE username = ?";
+    private final static String findByTokenStatement = "SELECT * FROM account WHERE session_token = ?";
 
     public void update() throws SQLException {
         PreparedStatement pstmt = Registry.getPSQLDatabase().getPreparedStatement(updateStatement);
@@ -111,6 +112,16 @@ public class AccountGateway {
         PSQLDatabase database = Registry.getPSQLDatabase();
         PreparedStatement preparedStatement = database.getPreparedStatement(findByUsernameStatement);
         preparedStatement.setString(1, username);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if(resultSet.next())
+            return new AccountGateway(resultSet);
+        throw new NoSuchElementException();
+    }
+
+    public static AccountGateway findByToken(String token) throws  SQLException, NoSuchElementException {
+        PSQLDatabase database = Registry.getPSQLDatabase();
+        PreparedStatement preparedStatement = database.getPreparedStatement(findByTokenStatement);
+        preparedStatement.setString(1, token);
         ResultSet resultSet = preparedStatement.executeQuery();
         if(resultSet.next())
             return new AccountGateway(resultSet);

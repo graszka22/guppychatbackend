@@ -4,13 +4,9 @@ import io.javalin.websocket.WsHandler;
 import java.util.function.Consumer;
 
 public class WebSocketHandler implements Consumer<WsHandler> {
-    private WebsocketSessionsMap sessionsMap;
-    private Gson gson;
     private WebsocketMessageHandlerWrapperFactory messageHandlerFactory;
 
     public WebSocketHandler() {
-        sessionsMap = new WebsocketSessionsMap();
-        gson = new Gson();
         messageHandlerFactory = new WebsocketMessageHandlerWrapperFactory();
     }
 
@@ -24,9 +20,5 @@ public class WebSocketHandler implements Consumer<WsHandler> {
         wsHandler.onClose((session, statusCode, reason) -> {
 
         });
-    }
-
-    private int authenticate(String token) {
-        return 0;
     }
 }

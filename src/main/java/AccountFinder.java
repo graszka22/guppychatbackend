@@ -21,4 +21,15 @@ public class AccountFinder {
         }
         return loadedAccount;
     }
+
+    public AccountGateway findByToken(String token) throws SQLException, NoSuchElementException {
+        AccountIdentityMap accountIdentityMap = Registry.getAccountIdentityMap();
+        AccountGateway account = AccountGateway.findByToken(token);
+        AccountGateway loadedAccount = accountIdentityMap.getAccount(account.getUserId());
+        if(loadedAccount == null) {
+            accountIdentityMap.addAccount(account);
+            return account;
+        }
+        return loadedAccount;
+    }
 }

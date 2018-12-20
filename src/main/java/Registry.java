@@ -4,11 +4,13 @@ public class Registry {
     private PSQLDatabase database;
     private AccountIdentityMap accountIdentityMap;
     private MessageIdentityMap messageIdentityMap;
+    private WebsocketSessionsMap websocketSessionsMap;
 
     private Registry() {
         database = new PSQLDatabase();
         accountIdentityMap = new AccountIdentityMap();
         messageIdentityMap = new MessageIdentityMap();
+        websocketSessionsMap = new WebsocketSessionsMap();
     }
 
     private static Registry getInstance() {
@@ -25,5 +27,9 @@ public class Registry {
 
     public static MessageIdentityMap getMessageIdentityMap() {
         return getInstance().messageIdentityMap;
+    }
+
+    public static WebsocketSessionsMap getWebsocketSessionsMap() {
+        return getInstance().websocketSessionsMap;
     }
 }

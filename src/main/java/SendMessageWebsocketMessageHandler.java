@@ -22,6 +22,11 @@ public class SendMessageWebsocketMessageHandler implements WebsocketMessageHandl
         message.insert();
         MessageIdentityMap map = Registry.getMessageIdentityMap();
         map.addMessage(message);
+        WebsocketSessionsMap sessionsMap = Registry.getWebsocketSessionsMap();
+        WsSession receiverSession = sessionsMap.getUserSession(data.to);
+        if(receiverSession != null) {
+            receiverSession.send("Receiving message: "+data.message);
+        }
     }
 
     public static Class<SendMessageCommandData> getDataClass() {
