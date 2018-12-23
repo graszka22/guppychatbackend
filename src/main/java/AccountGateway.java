@@ -1,6 +1,8 @@
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class AccountGateway {
@@ -71,6 +73,7 @@ public class AccountGateway {
     private final static String findStatement = "SELECT * FROM account WHERE user_id = ?;";
     private final static String findByUsernameStatement = "SELECT * FROM account WHERE username = ?";
     private final static String findByTokenStatement = "SELECT * FROM account WHERE session_token = ?";
+    private static final String findUsersFriendsStatement = "SELECT * FROM account INNER JOIN friends ON account.user_id = friends.friend_id WHERE friends.user_id = ?;";
 
     public void update() throws SQLException {
         PreparedStatement pstmt = Registry.getPSQLDatabase().getPreparedStatement(updateStatement);
@@ -126,5 +129,16 @@ public class AccountGateway {
         if(resultSet.next())
             return new AccountGateway(resultSet);
         throw new NoSuchElementException();
+    }
+
+    public static List<AccountGateway> findUsersFriends(int userId) throws SQLException {
+        PreparedStatement preparedStatement = Registry.getPSQLDatabase().getPreparedStatement(findUsersFriendsStatement);
+        preparedStatement.setInt(1, userId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<AccountGateway> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(new AccountGateway(resultSet));
+        }
+        return result;
     }
 }
