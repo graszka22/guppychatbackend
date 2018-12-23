@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import io.javalin.Context;
 import io.javalin.Handler;
 import org.jetbrains.annotations.NotNull;
@@ -7,6 +8,15 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 public class LoginRequestHandler implements Handler {
+    private static class LoginResponse {
+        String token;
+        int userId;
+        LoginResponse(String token, int userId) {
+            this.token = token;
+            this.userId = userId;
+        }
+    }
+
     @Override
     public void handle(@NotNull Context context) throws Exception {
         String username = context.formParam("username");
@@ -17,7 +27,7 @@ public class LoginRequestHandler implements Handler {
             String token = generateToken();
             account.setSessionToken(token);
             account.update();
-            context.result(token);
+            context.result(new Gson().toJson(new LoginResponse(token, account.getUserId())));
             context.status(200);
             return;
         }

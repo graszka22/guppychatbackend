@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import io.javalin.websocket.WsSession;
 
 import java.sql.Timestamp;
@@ -8,6 +9,14 @@ public class SendMessageWebsocketMessageHandler implements WebsocketMessageHandl
         public int userId;
         public int to;
         public String message;
+    }
+
+    private static class ReceiveMessageWebsocketMessage {
+        MessageGateway data;
+        String command = "RECEIVE_MESSAGE";
+        ReceiveMessageWebsocketMessage(MessageGateway data) {
+            this.data = data;
+        }
     }
 
     private SendMessageCommandData data;
@@ -25,7 +34,7 @@ public class SendMessageWebsocketMessageHandler implements WebsocketMessageHandl
         WebsocketSessionsMap sessionsMap = Registry.getWebsocketSessionsMap();
         WsSession receiverSession = sessionsMap.getUserSession(data.to);
         if(receiverSession != null) {
-            receiverSession.send("Receiving message: "+data.message);
+            receiverSession.send(new Gson().toJson(new ReceiveMessageWebsocketMessage(message)));
         }
     }
 
