@@ -15,6 +15,7 @@ public class RegisterRequestHandler implements Handler {
         accountGateway.insert();
         Registry.getAccountIdentityMap().addAccount(accountGateway);
 
-        context.status(201);
+        LoginRequestHandler loginRequestHandler = new LoginRequestHandler();
+        loginRequestHandler.handle(context);
     }
 }
