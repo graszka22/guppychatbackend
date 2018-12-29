@@ -29,6 +29,10 @@ public class WebsocketMessageHandlerWrapperFactory implements JsonDeserializer<W
                 return new WebsocketMessageHandlerWrapper<>(jsonObject,
                         new GetFriendsWebsocketMessageHandler(dataFromJson(jsonObject,
                                 GetFriendsWebsocketMessageHandler.getDataClass())));
+            case SEARCH_FRIENDS:
+                return new WebsocketMessageHandlerWrapper<>(jsonObject,
+                        new SearchFriendsWebsocketMessageHandler(dataFromJson(jsonObject,
+                                SearchFriendsWebsocketMessageHandler.getDataClass())));
             default:
                 return null;
         }
@@ -46,5 +50,6 @@ public class WebsocketMessageHandlerWrapperFactory implements JsonDeserializer<W
         GET_MESSAGES,
         SEND_MESSAGE,
         GET_FRIENDS,
+        SEARCH_FRIENDS,
     }
 }

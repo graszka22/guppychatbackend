@@ -14,6 +14,7 @@ public class WebsocketMessageHandlerWrapper<T extends WebsocketMessageHandler> {
     }
 
     private int authenticate(WsSession session) {
+        System.out.println(jsonObject);
         String token = jsonObject.get("token").getAsString();
         AccountFinder finder = new AccountFinder();
         try {
