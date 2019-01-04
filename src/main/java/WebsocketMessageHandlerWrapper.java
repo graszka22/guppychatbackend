@@ -13,20 +13,19 @@ public class WebsocketMessageHandlerWrapper<T extends WebsocketMessageHandler> {
         this.messageHandler = messageHandler;
     }
 
-    private int authenticate(WsSession session) {
+    private AccountGateway authenticate(WsSession session) {
         System.out.println(jsonObject);
         String token = jsonObject.get("token").getAsString();
         AccountFinder finder = new AccountFinder();
         try {
-            AccountGateway account = finder.findByToken(token);
-            return account.getUserId();
+            return finder.findByToken(token);
         } catch(SQLException ex) {
             throw new RuntimeException(ex);
         } catch(NoSuchElementException ex) {
             session.send("Invalid auth token.");
             session.close();
         }
-        return -1;
+        return null;
     }
 
     private void registerSession(WsSession session, int userId) {
@@ -35,9 +34,9 @@ public class WebsocketMessageHandlerWrapper<T extends WebsocketMessageHandler> {
     }
 
     void runHandler(WsSession session) throws SQLException {
-        int userId = authenticate(session);
-        if(userId == -1) return;
-        registerSession(session, userId);
-        messageHandler.handleMessage(session);
+        AccountGateway account = authenticate(session);
+        if(account == null) return;
+        registerSession(session, account.getUserId());
+        messageHandler.handleMessage(session, account);
     }
 }

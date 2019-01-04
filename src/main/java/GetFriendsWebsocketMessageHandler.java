@@ -39,7 +39,7 @@ public class GetFriendsWebsocketMessageHandler implements WebsocketMessageHandle
     }
 
     @Override
-    public void handleMessage(WsSession session) throws SQLException {
+    public void handleMessage(WsSession session, AccountGateway userAccount) throws SQLException {
         FriendsFinder friendsFinder = new FriendsFinder();
         List<AccountGateway> friendsAccounts = friendsFinder.findUsersFriends(data.userId);
         List<Friend> friends = friendsAccounts

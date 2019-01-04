@@ -26,7 +26,7 @@ public class SendMessageWebsocketMessageHandler implements WebsocketMessageHandl
     }
 
     @Override
-    public void handleMessage(WsSession session) throws SQLException {
+    public void handleMessage(WsSession session, AccountGateway account) throws SQLException {
         MessageGateway message = new MessageGateway(data.userId, data.to, data.message, new Timestamp(System.currentTimeMillis()));
         message.insert();
         MessageIdentityMap map = Registry.getMessageIdentityMap();

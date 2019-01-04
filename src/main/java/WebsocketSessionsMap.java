@@ -13,7 +13,7 @@ public class WebsocketSessionsMap {
         return sessionMap.get(userId);
     }
 
-    public void removeSession() {
-
+    public void removeSession(int userId) {
+        sessionMap.remove(userId);
     }
 }

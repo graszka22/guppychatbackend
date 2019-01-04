@@ -29,7 +29,7 @@ public class SearchFriendsWebsocketMessageHandler implements WebsocketMessageHan
     }
 
     @Override
-    public void handleMessage(WsSession session) throws SQLException {
+    public void handleMessage(WsSession session, AccountGateway account) throws SQLException {
         AccountFinder accountFinder = new AccountFinder();
         List<AccountGateway> listOfAccounts = accountFinder.searchByUsername(data.searchPhrase);
         List<String> listOfUsernames = listOfAccounts.stream().map(AccountGateway::getUsername).collect(Collectors.toList());

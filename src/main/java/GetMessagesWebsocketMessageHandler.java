@@ -29,7 +29,7 @@ public class GetMessagesWebsocketMessageHandler implements WebsocketMessageHandl
     }
 
     @Override
-    public void handleMessage(WsSession session) throws SQLException {
+    public void handleMessage(WsSession session, AccountGateway account) throws SQLException {
         MessageFinder messageFinder = new MessageFinder();
         List<MessageGateway> listOfMessages = messageFinder.findByUsers(data.userId, data.friendId);
         String response = new Gson().toJson(new GetMessagesCommandResponse(listOfMessages));
