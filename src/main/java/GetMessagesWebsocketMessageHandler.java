@@ -13,8 +13,10 @@ public class GetMessagesWebsocketMessageHandler implements WebsocketMessageHandl
     private static class GetMessagesCommandResponse {
         final String command = "GET_MESSAGES_RESPONSE";
         List<MessageGateway> messages;
-        GetMessagesCommandResponse(List<MessageGateway> messages) {
+        int friendId;
+        GetMessagesCommandResponse(List<MessageGateway> messages, int friendId) {
             this.messages = messages;
+            this.friendId = friendId;
         }
     }
 
@@ -32,7 +34,7 @@ public class GetMessagesWebsocketMessageHandler implements WebsocketMessageHandl
     public void handleMessage(WsSession session, AccountGateway account) throws SQLException {
         MessageFinder messageFinder = new MessageFinder();
         List<MessageGateway> listOfMessages = messageFinder.findByUsers(data.userId, data.friendId);
-        String response = new Gson().toJson(new GetMessagesCommandResponse(listOfMessages));
+        String response = new Gson().toJson(new GetMessagesCommandResponse(listOfMessages, data.friendId));
         session.send(response);
     }
 }
