@@ -45,7 +45,7 @@ public class FriendsGateway {
         PreparedStatement preparedStatement = database.getPreparedStatement(insertStatement);
         preparedStatement.setInt(1, userId);
         preparedStatement.setInt(2, friendId);
-        preparedStatement.executeQuery();
+        preparedStatement.executeUpdate();
     }
 
     public static FriendsGateway load(int userId, int friendId) throws SQLException {

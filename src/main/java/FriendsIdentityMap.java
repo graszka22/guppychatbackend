@@ -25,7 +25,7 @@ public class FriendsIdentityMap {
         }
     }
 
-    private HashMap<Friends, FriendsGateway> map;
+    private HashMap<Friends, FriendsGateway> map = new HashMap<>();
 
     public FriendsGateway get(int userId, int friendId) {
         return map.get(new Friends(userId, friendId));

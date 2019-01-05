@@ -10,10 +10,19 @@ public class SearchFriendsWebsocketMessageHandler implements WebsocketMessageHan
         public String searchPhrase;
     }
 
+    private static class FriendData {
+        String username;
+        int userId;
+        FriendData(int userId, String username) {
+            this.userId = userId;
+            this.username = username;
+        }
+    }
+
     private static class SearchFriendsCommandResponse {
         final String command = "SEARCH_FRIENDS_RESPONSE";
-        List<String> results;
-        SearchFriendsCommandResponse(List<String> results) {
+        List<FriendData> results;
+        SearchFriendsCommandResponse(List<FriendData> results) {
             this.results = results;
         }
     }
@@ -29,11 +38,14 @@ public class SearchFriendsWebsocketMessageHandler implements WebsocketMessageHan
     }
 
     @Override
-    public void handleMessage(WsSession session, AccountGateway account) throws SQLException {
+    public void handleMessage(WsSession session, AccountGateway userAccount) throws SQLException {
         AccountFinder accountFinder = new AccountFinder();
         List<AccountGateway> listOfAccounts = accountFinder.searchByUsername(data.searchPhrase);
-        List<String> listOfUsernames = listOfAccounts.stream().map(AccountGateway::getUsername).collect(Collectors.toList());
-        String response = new Gson().toJson(new SearchFriendsCommandResponse(listOfUsernames));
+        List<FriendData> listOfFriends = listOfAccounts
+                .stream()
+                .map(account -> new FriendData(account.getUserId(), account.getUsername()))
+                .collect(Collectors.toList());
+        String response = new Gson().toJson(new SearchFriendsCommandResponse(listOfFriends));
         session.send(response);
     }
 }

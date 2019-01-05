@@ -36,6 +36,10 @@ public class WebsocketMessageHandlerWrapperFactory implements JsonDeserializer<W
             case LOGOUT:
                 return new WebsocketMessageHandlerWrapper<>(jsonObject,
                         new LogoutWebsocketMessageHandler());
+            case ADD_FRIEND:
+                return new WebsocketMessageHandlerWrapper<>(jsonObject,
+                        new AddFriendWebsocketMessageHandler(dataFromJson(jsonObject,
+                                AddFriendWebsocketMessageHandler.getDataClass())));
             default:
                 return null;
         }
@@ -55,5 +59,6 @@ public class WebsocketMessageHandlerWrapperFactory implements JsonDeserializer<W
         GET_FRIENDS,
         SEARCH_FRIENDS,
         LOGOUT,
+        ADD_FRIEND,
     }
 }
