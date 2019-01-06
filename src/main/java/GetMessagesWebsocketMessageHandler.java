@@ -8,6 +8,7 @@ public class GetMessagesWebsocketMessageHandler implements WebsocketMessageHandl
     public static class GetMessagesCommandData {
         public int userId;
         public int friendId;
+        public int minMessageId;
     }
 
     private static class GetMessagesCommandResponse {
@@ -33,7 +34,7 @@ public class GetMessagesWebsocketMessageHandler implements WebsocketMessageHandl
     @Override
     public void handleMessage(WsSession session, AccountGateway account) throws SQLException {
         MessageFinder messageFinder = new MessageFinder();
-        List<MessageGateway> listOfMessages = messageFinder.findByUsers(data.userId, data.friendId);
+        List<MessageGateway> listOfMessages = messageFinder.findByUsers(data.userId, data.friendId, data.minMessageId);
         String response = new Gson().toJson(new GetMessagesCommandResponse(listOfMessages, data.friendId));
         session.send(response);
     }

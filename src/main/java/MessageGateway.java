@@ -68,7 +68,8 @@ public class MessageGateway {
     private static final String updateStatement = "UPDATE message SET sender_id = ?, receiver_id = ?, text = ?, date_sent = ? WHERE message_id = ?;";
     private static final String insertStatement = "INSERT INTO message(sender_id, receiver_id, text, date_sent) VALUES (?, ?, ?, ?);";
     private static final String findStatement = "SELECT * FROM message WHERE message_id = ?;";
-    private static final String findByUsersStatement = "SELECT * FROM message WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?);";
+    private static final String findByUsersStatementWithBoundary = "SELECT * FROM message WHERE ((sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)) AND message_id < ? ORDER BY message_id DESC LIMIT 10;";
+    private static final String findByUsersStatement = "SELECT * FROM message WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY message_id DESC LIMIT 30;";
 
     public void update() throws SQLException {
         PreparedStatement statement = Registry.getPSQLDatabase().getPreparedStatement(updateStatement);
@@ -104,12 +105,14 @@ public class MessageGateway {
         throw new NoSuchElementException();
     }
 
-    public static List<MessageGateway> findByUsers(int user1, int user2) throws SQLException {
-        PreparedStatement statement = Registry.getPSQLDatabase().getPreparedStatement(findByUsersStatement);
+    public static List<MessageGateway> findByUsers(int user1, int user2, int minMessageId) throws SQLException {
+        PreparedStatement statement = Registry.getPSQLDatabase().getPreparedStatement(minMessageId == -1 ? findByUsersStatement : findByUsersStatementWithBoundary);
         statement.setInt(1, user1);
         statement.setInt(2, user2);
         statement.setInt(3, user2);
         statement.setInt(4, user1);
+        if(minMessageId != -1)
+            statement.setInt(5, minMessageId);
         ResultSet resultSet = statement.executeQuery();
         ArrayList<MessageGateway> result = new ArrayList<>();
         while(resultSet.next()) {

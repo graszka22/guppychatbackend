@@ -13,9 +13,9 @@ public class MessageFinder {
         return message;
     }
 
-    public List<MessageGateway> findByUsers(int user1, int user2) throws SQLException {
+    public List<MessageGateway> findByUsers(int user1, int user2, int minMessageId) throws SQLException {
         MessageIdentityMap messageIdentityMap = Registry.getMessageIdentityMap();
-        List<MessageGateway> messages = MessageGateway.findByUsers(user1, user2);
+        List<MessageGateway> messages = MessageGateway.findByUsers(user1, user2, minMessageId);
         return messages
                 .stream()
                 .map(message -> {
