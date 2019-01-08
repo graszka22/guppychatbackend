@@ -15,9 +15,9 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class MessageFinderPSQL implements MessageFinder {
-    private static final String findStatement = "SELECT * FROM message WHERE message_id = ?;";
-    private static final String findByUsersStatementWithBoundary = "SELECT * FROM message WHERE ((sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)) AND message_id < ? ORDER BY message_id DESC LIMIT 10;";
-    private static final String findByUsersStatement = "SELECT * FROM message WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY message_id DESC LIMIT 30;";
+    private static final String findStatement = "SELECT * FROM message WHERE id = ?;";
+    private static final String findByUsersStatementWithBoundary = "SELECT * FROM message WHERE ((sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)) AND id < ? ORDER BY id DESC LIMIT 10;";
+    private static final String findByUsersStatement = "SELECT * FROM message WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY id DESC LIMIT 30;";
 
     @Override
     public MessageGateway find(int id) throws SQLException, NoSuchElementException {

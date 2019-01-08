@@ -3,9 +3,9 @@ package com.guppychat.backend.datasource.PSQL;
 import java.sql.*;
 
 public class PSQLDatabase {
-    private static final String url = "jdbc:postgresql://localhost/guppy";
+    private static final String url = "jdbc:postgresql://localhost/guppychat";
     private static final String user = "postgres";
-    private static final String password = "postgres";
+    private static final String password = "qwerty";
 
     private Connection connection;
 

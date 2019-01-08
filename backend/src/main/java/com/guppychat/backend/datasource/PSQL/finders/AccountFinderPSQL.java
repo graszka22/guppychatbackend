@@ -16,10 +16,10 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class AccountFinderPSQL implements AccountFinder {
-    private final static String findStatement = "SELECT * FROM account WHERE user_id = ?;";
+    private final static String findStatement = "SELECT * FROM account WHERE id = ?;";
     private final static String findByUsernameStatement = "SELECT * FROM account WHERE username = ?";
     private final static String findByTokenStatement = "SELECT * FROM account WHERE session_token = ?";
-    private static final String findUsersFriendsStatement = "SELECT * FROM account INNER JOIN friends ON account.user_id = friends.friend_id WHERE friends.user_id = ?;";
+    private static final String findUsersFriendsStatement = "SELECT * FROM account INNER JOIN friends ON account.id = friends.friend_id WHERE friends.user_id = ?;";
     private static final String searchUsersByUsername = "SELECT * FROM account WHERE username LIKE ?";
 
     @Override
