@@ -3,14 +3,15 @@ package com.guppychat.backend.sockets.handlers;
 import com.google.gson.Gson;
 import com.guppychat.backend.Registry;
 import com.guppychat.backend.datasource.finders.AccountFinder;
-import com.guppychat.backend.sockets.WebsocketMessageHandler;
+import com.guppychat.backend.sockets.Socket;
+import com.guppychat.backend.sockets.SocketMessageHandler;
 import com.guppychat.backend.datasource.gateways.AccountGateway;
 import com.guppychat.backend.datasource.gateways.FriendsGateway;
 import io.javalin.websocket.WsSession;
 
 import java.sql.SQLException;
 
-public class AddFriendWebsocketMessageHandler implements WebsocketMessageHandler {
+public class AddFriendSocketMessageHandler implements SocketMessageHandler {
     public static class AddFriendCommandData {
         public int friendId;
     }
@@ -31,12 +32,12 @@ public class AddFriendWebsocketMessageHandler implements WebsocketMessageHandler
         return AddFriendCommandData.class;
     }
 
-    public AddFriendWebsocketMessageHandler(AddFriendCommandData data) {
+    public AddFriendSocketMessageHandler(AddFriendCommandData data) {
         this.data = data;
     }
 
     @Override
-    public void handleMessage(WsSession session, AccountGateway account) throws SQLException {
+    public void handleMessage(Socket session, AccountGateway account) throws SQLException {
         AccountFinder accountFinder = Registry.getAccountFinderFactory().create();
         AccountGateway accountGateway = accountFinder.find(data.friendId);
         FriendsGateway friendsGateway = Registry.getFriendsGatewayFactory().create();

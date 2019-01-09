@@ -9,11 +9,11 @@ import io.javalin.websocket.WsSession;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
-public class WebsocketMessageHandlerWrapper<T extends WebsocketMessageHandler> {
+public class SocketMessageHandlerWrapper<T extends SocketMessageHandler> {
     private T messageHandler;
     private JsonObject jsonObject;
 
-    WebsocketMessageHandlerWrapper(JsonObject jsonObject, T messageHandler) {
+    SocketMessageHandlerWrapper(JsonObject jsonObject, T messageHandler) {
         this.jsonObject = jsonObject;
         this.messageHandler = messageHandler;
     }
@@ -34,14 +34,14 @@ public class WebsocketMessageHandlerWrapper<T extends WebsocketMessageHandler> {
     }
 
     private void registerSession(WsSession session, int userId) {
-        WebsocketSessionsMap map = Registry.getWebsocketSessionsMap();
-        map.addSession(session, userId);
+        SocketSessionsMap map = Registry.getWebsocketSessionsMap();
+        map.addSession(new WebSocket(session), userId);
     }
 
     void runHandler(WsSession session) throws SQLException {
         AccountGateway account = authenticate(session);
         if(account == null) return;
         registerSession(session, account.getId());
-        messageHandler.handleMessage(session, account);
+        messageHandler.handleMessage(new WebSocket(session), account);
     }
 }

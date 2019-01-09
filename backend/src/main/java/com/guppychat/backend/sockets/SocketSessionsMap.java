@@ -4,14 +4,14 @@ import io.javalin.websocket.WsSession;
 
 import java.util.HashMap;
 
-public class WebsocketSessionsMap {
-    private HashMap<Integer, WsSession> sessionMap = new HashMap<>();
+public class SocketSessionsMap {
+    private HashMap<Integer, Socket> sessionMap = new HashMap<>();
 
-    public void addSession(WsSession session, int userId) {
+    public void addSession(Socket session, int userId) {
         sessionMap.put(userId, session);
     }
 
-    public WsSession getUserSession(int userId) {
+    public Socket getUserSession(int userId) {
         return sessionMap.get(userId);
     }
 

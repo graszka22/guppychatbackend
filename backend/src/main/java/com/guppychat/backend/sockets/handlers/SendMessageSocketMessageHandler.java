@@ -3,8 +3,9 @@ package com.guppychat.backend.sockets.handlers;
 import com.google.gson.Gson;
 import com.guppychat.backend.Registry;
 import com.guppychat.backend.datasource.identitymaps.MessageIdentityMap;
-import com.guppychat.backend.sockets.WebsocketMessageHandler;
-import com.guppychat.backend.sockets.WebsocketSessionsMap;
+import com.guppychat.backend.sockets.Socket;
+import com.guppychat.backend.sockets.SocketMessageHandler;
+import com.guppychat.backend.sockets.SocketSessionsMap;
 import com.guppychat.backend.datasource.gateways.MessageGateway;
 import com.guppychat.backend.datasource.gateways.AccountGateway;
 import io.javalin.websocket.WsSession;
@@ -12,7 +13,7 @@ import io.javalin.websocket.WsSession;
 import java.sql.Timestamp;
 import java.sql.SQLException;
 
-public class SendMessageWebsocketMessageHandler implements WebsocketMessageHandler {
+public class SendMessageSocketMessageHandler implements SocketMessageHandler {
     public static class SendMessageCommandData {
         public int userId;
         public int to;
@@ -29,12 +30,12 @@ public class SendMessageWebsocketMessageHandler implements WebsocketMessageHandl
 
     private SendMessageCommandData data;
 
-    public SendMessageWebsocketMessageHandler(SendMessageCommandData data) {
+    public SendMessageSocketMessageHandler(SendMessageCommandData data) {
         this.data = data;
     }
 
     @Override
-    public void handleMessage(WsSession session, AccountGateway account) throws SQLException {
+    public void handleMessage(Socket session, AccountGateway account) throws SQLException {
         MessageGateway message = Registry.getMessageGatewayFactory().create();
         message.setSenderId(data.userId);
         message.setReceiverId(data.to);
@@ -43,8 +44,8 @@ public class SendMessageWebsocketMessageHandler implements WebsocketMessageHandl
         message.insert();
         MessageIdentityMap map = Registry.getMessageIdentityMap();
         map.addMessage(message);
-        WebsocketSessionsMap sessionsMap = Registry.getWebsocketSessionsMap();
-        WsSession receiverSession = sessionsMap.getUserSession(data.to);
+        SocketSessionsMap sessionsMap = Registry.getWebsocketSessionsMap();
+        Socket receiverSession = sessionsMap.getUserSession(data.to);
         if(receiverSession != null) {
             receiverSession.send(new Gson().toJson(new ReceiveMessageWebsocketMessage(message)));
         }

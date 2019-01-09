@@ -16,7 +16,7 @@ import com.guppychat.backend.datasource.gateways.AccountGatewayFactory;
 import com.guppychat.backend.datasource.gateways.MessageGatewayFactory;
 import com.guppychat.backend.datasource.gateways.FriendsGatewayFactory;
 import com.guppychat.backend.datasource.PSQL.PSQLDatabase;
-import com.guppychat.backend.sockets.WebsocketSessionsMap;
+import com.guppychat.backend.sockets.SocketSessionsMap;
 
 public class Registry {
     private static Registry instance = new Registry();
@@ -24,7 +24,7 @@ public class Registry {
     private PSQLDatabase database;
     private AccountIdentityMap accountIdentityMap;
     private MessageIdentityMap messageIdentityMap;
-    private WebsocketSessionsMap websocketSessionsMap;
+    private SocketSessionsMap socketSessionsMap;
     private FriendsIdentityMap friendsIdentityMap;
 
     private AccountFinderFactory accountFinderFactory = new AccountFinderPSQLFactory();
@@ -39,7 +39,7 @@ public class Registry {
         database = new PSQLDatabase();
         accountIdentityMap = new AccountIdentityMap();
         messageIdentityMap = new MessageIdentityMap();
-        websocketSessionsMap = new WebsocketSessionsMap();
+        socketSessionsMap = new SocketSessionsMap();
         friendsIdentityMap = new FriendsIdentityMap();
     }
 
@@ -59,8 +59,8 @@ public class Registry {
         return getInstance().messageIdentityMap;
     }
 
-    public static WebsocketSessionsMap getWebsocketSessionsMap() {
-        return getInstance().websocketSessionsMap;
+    public static SocketSessionsMap getWebsocketSessionsMap() {
+        return getInstance().socketSessionsMap;
     }
 
     public static FriendsIdentityMap getFriendsIdentityMap() {

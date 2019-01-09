@@ -3,15 +3,15 @@ package com.guppychat.backend.sockets.handlers;
 import com.google.gson.Gson;
 import com.guppychat.backend.Registry;
 import com.guppychat.backend.datasource.finders.MessageFinder;
-import com.guppychat.backend.sockets.WebsocketMessageHandler;
+import com.guppychat.backend.sockets.Socket;
+import com.guppychat.backend.sockets.SocketMessageHandler;
 import com.guppychat.backend.datasource.gateways.AccountGateway;
 import com.guppychat.backend.datasource.gateways.MessageGateway;
-import io.javalin.websocket.WsSession;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class GetMessagesWebsocketMessageHandler implements WebsocketMessageHandler {
+public class GetMessagesSocketMessageHandler implements SocketMessageHandler {
     public static class GetMessagesCommandData {
         public int userId;
         public int friendId;
@@ -34,12 +34,12 @@ public class GetMessagesWebsocketMessageHandler implements WebsocketMessageHandl
         return GetMessagesCommandData.class;
     }
 
-    public GetMessagesWebsocketMessageHandler(GetMessagesCommandData data) {
+    public GetMessagesSocketMessageHandler(GetMessagesCommandData data) {
         this.data = data;
     }
 
     @Override
-    public void handleMessage(WsSession session, AccountGateway account) throws SQLException {
+    public void handleMessage(Socket session, AccountGateway account) throws SQLException {
         MessageFinder messageFinder = Registry.getMessageFinderFactory().create();
         List<MessageGateway> listOfMessages = messageFinder.findByUsers(data.userId, data.friendId, data.minMessageId);
         String response = new Gson().toJson(new GetMessagesCommandResponse(listOfMessages, data.friendId));
