@@ -7,6 +7,8 @@ import io.javalin.Handler;
 import org.jetbrains.annotations.NotNull;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.SQLException;
+
 public class RegisterRequestHandler implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
@@ -19,7 +21,12 @@ public class RegisterRequestHandler implements Handler {
         accountGateway.setUsername(username);
         accountGateway.setEmail(email);
         accountGateway.setPassword(password);
-        accountGateway.insert();
+        try {
+            accountGateway.insert();
+        } catch (SQLException e) {
+            context.status(409);
+            return;
+        }
         Registry.getAccountIdentityMap().addAccount(accountGateway);
 
         LoginRequestHandler loginRequestHandler = new LoginRequestHandler();

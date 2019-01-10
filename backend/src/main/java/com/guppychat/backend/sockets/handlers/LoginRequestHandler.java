@@ -11,6 +11,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.NoSuchElementException;
 
 public class LoginRequestHandler implements Handler {
     private static class LoginResponse {
@@ -27,7 +28,13 @@ public class LoginRequestHandler implements Handler {
         String username = context.formParam("username");
         String password = context.formParam("password");
         AccountFinder accountFinder = Registry.getAccountFinderFactory().create();
-        AccountGateway account = accountFinder.findByUsername(username);
+        AccountGateway account;
+        try {
+            account = accountFinder.findByUsername(username);
+        } catch(NoSuchElementException e) {
+            context.status(403);
+            return;
+        }
         if(BCrypt.checkpw(password, account.getPassword())) {
             String token = generateToken();
             account.setSessionToken(token);
